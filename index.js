@@ -18,6 +18,9 @@ const moment = require('moment')
 //Importar Lodash
 const _ = require('lodash')
 
+//importar chalk
+const chalk = require('chalk');
+
 
 //crear array de usuarios
 let arrayUsuarios = []
@@ -32,26 +35,35 @@ http.createServer((req, res) => {
       axios.get("https://randomuser.me/api")
         .then((data) => {
           // Paso 3
-          const firstName = data.data.results[0].name.first
-          const lastName = data.data.results[0].name.last
+
+          const {
+            first,
+            last
+          } = data.data.results[0].name
 
           const id = uuidv4().slice(0, 6)
 
           const timeStamp = moment().format('MMMM Do YYYY, H:mm:ss a')
 
           arrayUsuarios.push({
-            nombre: firstName,
-            apellido: lastName,
+            nombre: first,
+            apellido: last,
             id: id,
             timeStamp: timeStamp
           })
 
           let htmlString = ''
+          let chalkString = ''
 
           _.forEach(arrayUsuarios, (e, i) => {
 
             htmlString += `<p>${i+1}. Nombre: ${e.nombre} - Apellido: ${e.apellido} - ID: ${e.id} - Timestamp: ${e.timeStamp}</p>`
+
+            chalkString += `${i+1}. Nombre: ${e.nombre} - Apellido: ${e.apellido} - ID: ${e.id} - Timestamp: ${e.timeStamp}`
+
           })
+
+          console.log(chalk.blue.bgWhite(chalkString));
 
           res.writeHead(200, {
             'Content-Type': 'text/html'
